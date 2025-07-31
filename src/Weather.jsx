@@ -5,10 +5,10 @@ const API_KEY = "e8239b1b90bea6d4c011fb1f800d96ce";
 
 export default function Weather() {
   const [weather, setWeather] = useState(null);
-  const [city, setCity]       = useState('London');
-  const [input, setInput]     = useState('London');
+  const [city, setCity] = useState('London');
+  const [input, setInput] = useState('London');
   const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchWeather = async () => {
@@ -16,13 +16,14 @@ export default function Weather() {
       setError(null);
       try {
         const { data } = await axios.get(
-          `https://api.openweathermap.org/data/2.5/weather`, {
-            params: { q: city, appid: API_KEY, units: 'metric' }
+          `https://api.openweathermap.org/data/2.5/weather`,
+          {
+            params: { q: city, appid: API_KEY, units: 'metric' },
           }
         );
         setWeather(data);
       } catch {
-        setError('Could not fetch weather');
+        setError('⚠️ Could not fetch weather');
         setWeather(null);
       } finally {
         setLoading(false);
@@ -40,49 +41,52 @@ export default function Weather() {
   return (
     <div className="app-container">
       <div className="bg-animation"></div>
+
       <form className="weather-card" onSubmit={handleSubmit}>
         <input
           value={input}
-          onChange={e => setInput(e.target.value)}
+          onChange={(e) => setInput(e.target.value)}
           placeholder="Enter city"
         />
         <button type="submit">Go</button>
 
         {loading && <p>Loading…</p>}
-        {error   && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
 
         {weather && !error && (
-          <div>
+          <div className="weather-details">
             <h2>{weather.name}</h2>
             <WeatherIcon main={weather.weather[0].main} />
-
-            <p>
-              {weather.main.temp}°C • {weather.weather[0].description}
-            </p>
+            <p>{weather.weather[0].description}</p>
+            <p>🌡️ Temp: {weather.main.temp}°C</p>
+            <p>🤒 Feels like: {weather.main.feels_like}°C</p>
+            <p>💧 Humidity: {weather.main.humidity}%</p>
+            <p>💨 Wind: {weather.wind.speed} m/s</p>
           </div>
         )}
       </form>
     </div>
   );
+
   function WeatherIcon({ main }) {
-  switch (main) {
-    case 'Clear':
-      return <span className="weather-icon sun" title="Clear">☀️</span>;
-    case 'Clouds':
-      return <span className="weather-icon cloud" title="Clouds">☁️</span>;
-    case 'Rain':
-      return <span className="weather-icon rain" title="Rain">🌧️</span>;
-    case 'Drizzle':
-      return <span className="weather-icon drizzle" title="Drizzle">🌦️</span>;
-    case 'Thunderstorm':
-      return <span className="weather-icon thunder" title="Thunderstorm">⛈️</span>;
-    case 'Snow':
-      return <span className="weather-icon snow" title="Snow">❄️</span>;
-    case 'Mist':
-    case 'Fog':
-      return <span className="weather-icon mist" title="Mist">🌫️</span>;
-    default:
-      return <span className="weather-icon" title={main}>🌡️</span>;
+    switch (main) {
+      case 'Clear':
+        return <span className="weather-icon sun" title="Clear">☀️</span>;
+      case 'Clouds':
+        return <span className="weather-icon cloud" title="Clouds">☁️</span>;
+      case 'Rain':
+        return <span className="weather-icon rain" title="Rain">🌧️</span>;
+      case 'Drizzle':
+        return <span className="weather-icon drizzle" title="Drizzle">🌦️</span>;
+      case 'Thunderstorm':
+        return <span className="weather-icon thunder" title="Thunderstorm">⛈️</span>;
+      case 'Snow':
+        return <span className="weather-icon snow" title="Snow">❄️</span>;
+      case 'Mist':
+      case 'Fog':
+        return <span className="weather-icon mist" title="Mist">🌫️</span>;
+      default:
+        return <span className="weather-icon" title={main}>🌡️</span>;
+    }
   }
-}
 }
